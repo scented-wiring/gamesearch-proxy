@@ -9,6 +9,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("", (req, res) => {
+  res.send("Running");
+});
+
 app.get("/games", (req, res) => {
   request(
     {
