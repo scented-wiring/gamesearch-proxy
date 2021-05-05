@@ -14,26 +14,7 @@ app.get("", (req, res) => {
 });
 
 app.get("/games", (req, res) => {
-  request(
-    {
-      url: `https://api.rawg.io/api/games?key=${process.env.KEY}&search=${
-        req.query.query
-      }&search_precise=true&search_exact=${req.query.exact}&page=${
-        req.query.page
-      }&page_size=${req.query.resultsPerPage}&ordering=${req.query.sortBy}${
-        req.query.genres ? `&genres=${req.query.genres}` : ``
-      }${req.query.platforms ? `&platforms=${req.query.platforms}` : ``}${
-        req.query.stores ? `&stores=${req.query.stores}` : ``
-      }`,
-    },
-    (error, response, body) => {
-      if (error || response.statusCode !== 200) {
-        return res.status(500).json({ type: "error", message: "error" });
-      }
-
-      res.json(JSON.parse(body));
-    }
-  );
+  res.send("Test");
 });
 
 const PORT = process.env.PORT || 4000;
