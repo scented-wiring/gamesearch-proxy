@@ -8,7 +8,10 @@ const PORT = process.env.PORT || 4000;
 const API_SERVICE_URL = `https://api.rawg.io/api/`;
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://gamesearch-app.herokuapp.com/"
+  );
   next();
 });
 
