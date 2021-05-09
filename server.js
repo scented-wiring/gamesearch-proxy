@@ -1,40 +1,30 @@
 require("dotenv").config();
 const express = require("express");
-const request = require("request");
+const morgan = require("morgan");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
+
+const PORT = process.env.PORT || 4000;
+const API_SERVICE_URL = `https://api.rawg.io/api/`;
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   next();
 });
 
-app.get("", (req, res) => {
+app.use(morgan("dev"));
+
+app.get("/", (req, res, next) => {
   res.send("Running");
 });
 
-app.get("/games", (req, res) => {
-  request(
-    {
-      url: `https://api.rawg.io/api/games?key=${process.env.KEY}&search=${
-        req.query.query
-      }&search_precise=true&search_exact=${req.query.exact}&page=${
-        req.query.page
-      }&page_size=${req.query.resultsPerPage}&ordering=${req.query.sortBy}${
-        req.query.genres ? `&genres=${req.query.genres}` : ``
-      }${req.query.platforms ? `&platforms=${req.query.platforms}` : ``}${
-        req.query.stores ? `&stores=${req.query.stores}` : ``
-      }`,
-    },
-    (error, response, body) => {
-      if (error || response.statusCode !== 200) {
-        return res.status(500).json({ type: "error", message: "error" });
-      }
+app.use(
+  "/games",
+  createProxyMiddleware({
+    target: API_SERVICE_URL,
+    changeOrigin: true,
+  })
+);
 
-      res.json(JSON.parse(body));
-    }
-  );
-});
-
-const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
